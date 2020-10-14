@@ -1,10 +1,12 @@
 import React, {useState,useMemo, useEffect} from "react";
 import axios from "axios";
 import Header from '../components/Header';
+import {useHistory} from 'react-router-dom';
 
 const weatherKey ='de31a0b0a6e1af73ab6b39a400c42684';
 
 function HomePage() {
+  const history = useHistory();
   const [weatherData,setWeatherData]=useState(null);
   const [city,setCity]=useState("Amsterdam");
   useEffect(()=>{
@@ -18,7 +20,16 @@ function HomePage() {
     .then(function () {
 
     });
-  },[]);
+  },[city]);
+  useEffect (()=>{
+    const searchParams = history.location.search;
+    const urlParams = new URLSearchParams(searchParams);
+    const city = urlParams.get("city");
+    if(city){
+      setCity(city);
+    }
+    console.log("city",city)
+  },[history]);
   const { cityName,cloudiness,currentTemp, highTemp,humidity, lowTemp, weatherType, windSpeed } = useMemo(()=>{
     let cloudiness = "";
     let currentTemp = "";
@@ -49,23 +60,13 @@ function HomePage() {
       humidity
     };
   },[weatherData]);
-  return (
-    /*
-    Display:
 
-      Weather Type (ex. Cloudy)
-      Current Temperature
-      High Temperature
-      Low Temperature
-      Cloudiness
-      Humidity
-      Wind Speed
-    */
+  return (
    
     <div>
       <Header />
       <main className="Home">
-        <h2>Weather in {cityName}</h2>
+        <h2 className="CityName">Weather in {cityName}</h2>
         <div className="WeatherInfo">
           <p>Weather Type: {weatherType}</p>
           <p>Current Temperature: {currentTemp}</p>

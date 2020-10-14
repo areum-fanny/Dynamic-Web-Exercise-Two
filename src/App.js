@@ -8,6 +8,9 @@ function App() {
     <div className="App">
       <Router>
         <Switch>
+          <Route path="/:city">
+            <HomePage />
+          </Route>
           <Route path="/">
             <HomePage />
           </Route>
