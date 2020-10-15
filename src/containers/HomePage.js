@@ -10,7 +10,7 @@ function HomePage() {
   const [weatherData,setWeatherData]=useState(null);
   const [city,setCity]=useState("Amsterdam");
   useEffect(()=>{
-    axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${weatherKey}`)
+    axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=imperial&appid=${weatherKey}`)
     .then(function(response){
       setWeatherData(response.data);
     })
@@ -30,8 +30,9 @@ function HomePage() {
     }
     console.log("city",city)
   },[history]);
-  const { cityName,cloudiness,currentTemp, highTemp,humidity, lowTemp, weatherType, windSpeed } = useMemo(()=>{
+  const { cloudinessValue,cloudiness,currentTemp, highTemp,humidity, lowTemp, weatherType, windSpeed } = useMemo(()=>{
     let cloudiness = "";
+    let cloudinessValue = 0;
     let currentTemp = "";
     let highTemp = "";
     let humidity ="";
@@ -42,12 +43,13 @@ function HomePage() {
     if(weatherData){
       cityName = `${weatherData.name}`;
       cloudiness = `${weatherData.clouds.all}%`;
-      currentTemp = `${weatherData.main.temp}`;
-      highTemp = `${weatherData.main.temp_max}`;
+      cloudinessValue = weatherData.clouds.all;
+      currentTemp = `${Math.round(weatherData.main.temp)}°F`;
+      highTemp = `${Math.round(weatherData.main.temp_max)}°F`;
       humidity =`${weatherData.main.humidity}%`;
-      lowTemp = `${weatherData.main.temp_min}`;
+      lowTemp = `${Math.round(weatherData.main.temp_min)}°F`;
       weatherType = `${weatherData.weather[0].description}`;
-      windSpeed = `${weatherData.wind.speed} km/h`;
+      windSpeed = `${weatherData.wind.speed} mph`;
     }
     return {
       cityName,
@@ -57,7 +59,8 @@ function HomePage() {
       weatherType,
       cloudiness,
       windSpeed,
-      humidity
+      humidity,
+      cloudinessValue
     };
   },[weatherData]);
 
@@ -68,7 +71,7 @@ function HomePage() {
       <main className="Home">
       <h2>Weather in <span>{city}</span></h2>
         <div className="WeatherInfo">
-          <div className="WeatherInfoBasic">
+          <div className="WeatherInfoBasic"  style={{backgroundColor:`rgba(30,50,40,${cloudinessValue/150})`}}>
             <div className="WeatherInfoImage">
                 <WeatherImage weatherType={weatherType} />
             </div>
@@ -83,8 +86,6 @@ function HomePage() {
               <h3 className="Label">Low Temperature:</h3>
               <p className="WeatherInfoTemperature_Small">{lowTemp}</p>
             </div>
-          
-          
             <div className="WeatherInfoExtra_Column">
               <h3 className="Label">Cloudiness: </h3>
               <p className="WeatherInfoTemperature_Small">{cloudiness}</p>

@@ -6,7 +6,8 @@ import {
     faSun, 
     faSmog,
     faRainbow,
-    faCloudMeatball
+    faCloudMeatball,
+    faSnowflake
 } from "@fortawesome/free-solid-svg-icons";
 
 function WeatherImage({weatherType}) {
@@ -14,11 +15,15 @@ function WeatherImage({weatherType}) {
         case 'clear sky':
             return <FontAwesomeIcon icon={faSun}/>;
         case 'scattered clouds':
-            return <FontAwesomeIcon icon={faCloudRain}/>;
-        case 'clouds':
-            return <FontAwesomeIcon icon={faCloudRain}/>;
-        default:
             return <FontAwesomeIcon icon={faCloudMeatball}/>;
+        case 'light rain ':
+            return <FontAwesomeIcon icon={faCloudRain}/>;
+        case 'freezing rain':
+            return <FontAwesomeIcon icon={faSnowflake}/>;
+        case 'light snow':
+            return <FontAwesomeIcon icon={faSnowflake}/>;
+        default:
+            return <FontAwesomeIcon icon={faCloud}/>;
     }
 }
 
